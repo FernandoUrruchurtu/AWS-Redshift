@@ -35,7 +35,7 @@ Redshift reparte el trabajo dentro de un cluster. Este cluster tiene varios nodo
 
 ## 4. Hands-On Redshift [Carga y Creación]
 Crearemos las tablas del curso con el script SQL brindado por el profesor. Una particularidad es que las tablas se definieron usando `sortkeys` y `distkeys`:
-```postgres
+```SQL
 create table users (
 	userid integer not null distkey sortkey,
 	username char(8),
@@ -61,7 +61,7 @@ create table users (
 - `sortkey` es una llave de ordenamiento, lo cual va a permitir que siempre venga creado.
 
 Ahora, luego de esto, lo siguiente es tomar del bucket de S3 los archivos proporcionados para el curso, dónde vamos a cargarlos mediante un copy. El Copy en redshift recibe los siguientes parámetros:
-```sql
+```SQL
 copy [basededatos].[schema].[tabla] 
 from 's3://[bucket]/[carpeta/archivo].extension'
 credentials 'aws_iam_role=[ARN del Rol de IAM (Esto se encuentra en IAM)]'
@@ -71,7 +71,7 @@ Este copy toma todo el archivo de los parámetros específicados y los alimenta 
 
 ## 5. Comprensión en Redshift  
 Las tablas deben comprimirse antes de la creación. La sentencia que se utiliza es la siguiente:  
-```sql
+```SQL
 CREATE TABLE [nombre_tabla] (
     [nombre_columna] [tipo_dato] ENCODE encoding-type
 );
@@ -82,3 +82,10 @@ CREATE TABLE test_comprension (
     nombre varchar(30) ENCODE TEXT255
 );
 ```  
+### Algoritmos de compresión
+- Existe la codificación Raw y esta es la base con la que cargamos las tablas.  
+- Por su parte, la AZ64 es un algoritmo nativo de AWS para comprimir la información. Usa el SIMD (Single Instruction Multiple Data). Esto quiere decir que envía una única instrucción a múltiples partes de Redshift.  
+- Codificación por diccionario de Bytes: Es eficaz cuando una columna tiene una cantidad limitada de valores únicos (menos de 256). Esto crea un diccionario en un bloque de redshift de 1 MB. Y cada bloque pasa de 210 bytes a 7 bytes solamente.
+- Codificación Delta: es muy útil para datos numéricos. Viene de 1 y 2 bytes. En el rango de 1 byte, solo va desde -127 a 127 bits, si en tamaño supera esto, no se aplica. Por otro lado, en el rango de 2 bytes, va desde -32K a 32K. 
+
+- Codificación LZO. Es útil para cadenas de texto libre. 
