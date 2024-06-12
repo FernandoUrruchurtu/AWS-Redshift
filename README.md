@@ -93,4 +93,43 @@ CREATE TABLE test_comprension (
 
 - Codificación LZO: Es útil para cadenas de texto libre.  
 
-- Codificación Mostly: 
+- Codificación Mostly: Se utiliza cuando la mayoría de los datos de una columna son mejores en bits al valor de la columna misma. Esta viene en compresiones de 8, 16 y 32 bits. Hay que conocer los datos para saber que codificación aplicar.
+
+- Codificación Runlenght: Crea un token para datos que contiene solamente pocas repeticiones.  
+  
+- Text 255  Text32k: Son útiles para compromir columnas varchar en las que se repiten con frecuencia las mismas palabras.  
+  
+- Zstander: mueve bytes entre si para lograr la compresión. 
+
+#### Ejemplo de una tabla habitual con las relaciones de compresión:  
+![](./images/AWS2.PNG)  
+
+## 6. Creando tablas para probar compresiones:
+Un ejemplo de una tabla puede ser con el formato nombre, vamos a probar los distintos tipos de compresion de la siguiente forma:
+1. Creamos la tabla que vamos a representar:  
+```SQL
+create table encoding_venue (
+    nameraw         varchar(100) encode RAW,
+    namebytedict    varchar(100) encode BYTEDICT,
+    namelzo         varchar(100) encode LZO,
+    namerunlenght   varchar(100) encode RUNLENGTH,
+    nametext255     varchar(100) encode TEXT255,
+    nametext32k     varchar(100) encode TEXT32K,
+    namezstd        varchar(100) encode ZSTD
+);
+```
+2. Insertamnos la tabla cartesiana que hicimos, dentro de la tabla encoding_venue:  
+```SQL
+insert into public.encoding_venue (
+select	
+	venuename, 
+	venuename, 
+	venuename, 
+	venuename, 
+	venuename,
+	venuename,
+	venuename
+from cartesian_venue);
+```
+
+Luego de esto, cruzamos con las tablas del sistema (esto no aplica a serverless)
