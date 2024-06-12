@@ -61,7 +61,7 @@ create table users (
 - `sortkey` es una llave de ordenamiento, lo cual va a permitir que siempre venga creado.
 
 Ahora, luego de esto, lo siguiente es tomar del bucket de S3 los archivos proporcionados para el curso, dónde vamos a cargarlos mediante un copy. El Copy en redshift recibe los siguientes parámetros:
-```SQL
+```sql
 copy [basededatos].[schema].[tabla] 
 from 's3://[bucket]/[carpeta/archivo].extension'
 credentials 'aws_iam_role=[ARN del Rol de IAM (Esto se encuentra en IAM)]'
@@ -71,7 +71,7 @@ Este copy toma todo el archivo de los parámetros específicados y los alimenta 
 
 ## 5. Comprensión en Redshift  
 Las tablas deben comprimirse antes de la creación. La sentencia que se utiliza es la siguiente:  
-```postgres
+```sql
 CREATE TABLE [nombre_tabla] (
     [nombre_columna] [tipo_dato] ENCODE encoding-type
 );
