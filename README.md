@@ -84,8 +84,13 @@ CREATE TABLE test_comprension (
 ```  
 ### Algoritmos de compresión
 - Existe la codificación Raw y esta es la base con la que cargamos las tablas.  
+
 - Por su parte, la AZ64 es un algoritmo nativo de AWS para comprimir la información. Usa el SIMD (Single Instruction Multiple Data). Esto quiere decir que envía una única instrucción a múltiples partes de Redshift.  
+
 - Codificación por diccionario de Bytes: Es eficaz cuando una columna tiene una cantidad limitada de valores únicos (menos de 256). Esto crea un diccionario en un bloque de redshift de 1 MB. Y cada bloque pasa de 210 bytes a 7 bytes solamente.
+
 - Codificación Delta: es muy útil para datos numéricos. Viene de 1 y 2 bytes. En el rango de 1 byte, solo va desde -127 a 127 bits, si en tamaño supera esto, no se aplica. Por otro lado, en el rango de 2 bytes, va desde -32K a 32K. 
 
-- Codificación LZO. Es útil para cadenas de texto libre. 
+- Codificación LZO: Es útil para cadenas de texto libre.  
+
+- Codificación Mostly: 
